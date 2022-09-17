@@ -84,6 +84,28 @@ router.put(
   }
 );
 
+router.put("/updateItemStock/:id", async (req, res) => {
+  const { quantity } = req.body;
+  const itemId = req.params.id;
+  console.log(typeof quantity);
+  if (!isValidObjectId(itemId))
+    return res.status(401).json({ error: "Invalid Request" });
+
+  const item = await Item.findById(itemId);
+  if (!item) return res.status(401).json({ error: "Item not found!" });
+
+  item.quantity = quantity;
+
+  await item.save();
+
+  res.json({
+    item: {
+      id: item._id,
+      quantity,
+    },
+  });
+});
+
 // Fetch Parties Info using : GET "/api/item/getItems"
 router.get("/getItems", async (req, res) => {
   try {
@@ -113,6 +135,5 @@ router.get("/searchItemByName", async (req, res) => {
     res.status(500).send("Internal server error");
   }
 });
-
 
 module.exports = router;
