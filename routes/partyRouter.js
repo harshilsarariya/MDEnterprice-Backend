@@ -28,7 +28,6 @@ router.post(
       }
 
       const newParty = new Party({ partyName, mobileNo });
-
       const saveParty = await newParty.save();
       success = true;
       res.json({ success, saveParty });
@@ -148,7 +147,7 @@ router.post(
   async (req, res) => {
     let success = false;
     try {
-      const { partyId, itemName, quantity, amount } = req.body;
+      const { partyId, itemName, quantity } = req.body;
 
       // If there are error then return the bad request and error
       const errors = validationResult(req);
@@ -161,7 +160,6 @@ router.post(
         partyId,
         itemName,
         quantity,
-        amount,
       });
 
       const savePartyOrder = await newPartyOrder.save();
@@ -199,15 +197,13 @@ router.get("/getPartyViseOrdersInfo", async (req, res) => {
 
   if (!order) return res.status(401).json({ error: "Order not found!" });
 
-  res.json({
-    PartyOrder: order.map((order) => ({
-      id: order._id,
-      itemName: order.itemName,
-      quantity: order.quantity,
-      amount: order.amount,
-      date: order.date,
-    })),
-  });
+  const PartyOrderData = order.map((o) => ({
+    id: o._id,
+    itemName: o.itemName,
+    quantity: o.quantity,
+    date: o.date,
+  }));
+  res.status(200).json({ PartyOrderData });
 });
 
 // Update Order Info using : PUT "/api/party/updatePartyOrder/id"
