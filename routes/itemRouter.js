@@ -87,7 +87,7 @@ router.put(
 router.put("/updateItemStock/:id", async (req, res) => {
   const { quantity } = req.body;
   const itemId = req.params.id;
-  console.log(typeof quantity);
+
   if (!isValidObjectId(itemId))
     return res.status(401).json({ error: "Invalid Request" });
 
@@ -117,12 +117,29 @@ router.get("/getItems", async (req, res) => {
   }
 });
 
+// Handle total stock using : GET "/api/item/getItems"
+router.get("/totalStock", async (req, res) => {
+  try {
+    const items = await Item.find();
+    let total = 0;
+    items.map((item) => {
+      total += item.quantity;
+    });
+    res.json(total);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal server error");
+  }
+});
+
 // Search Item Name : GET "/api/item/searchItemByName"
 router.get("/searchItemByName", async (req, res) => {
   try {
     const { itemName } = req.query;
+
+    const order = itemName.replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, "\\$&");
     let item = await Item.find({
-      $and: [{ itemName: { $regex: itemName, $options: "m" } }],
+      $and: [{ itemName: { $regex: order, $options: "m" } }],
     }).sort({
       createdAt: -1,
     });
