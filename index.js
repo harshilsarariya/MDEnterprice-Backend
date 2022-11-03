@@ -9,7 +9,7 @@ connectToMongo();
 
 const app = express();
 
-// app.use(cors({ origin: "http://localhost:3000" }));
+// app.use(cors({ origin: "http://192.168.121.28:19000" }));
 
 // create application/json parser
 var jsonParser = bodyParser.json();
