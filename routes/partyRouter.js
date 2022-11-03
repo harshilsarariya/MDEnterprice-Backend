@@ -174,14 +174,14 @@ router.post(
 
 // Delete party Order using : DELETE "/api/party/deletePartyOrder"
 router.delete("/deletePartyOrder/:id", async (req, res) => {
-  const orderId = req.params.id;
-  if (!isValidObjectId(orderId))
+  const partyOrderId = req.params.id;
+  if (!isValidObjectId(partyOrderId))
     return res.status(401).json({ error: "Invalid Request" });
 
-  const order = await PartyOrder.findById(orderId);
-  if (!order) return res.status(401).json({ error: "Order not found!" });
-
-  await Party.findByIdAndDelete(orderId);
+  const order = await PartyOrder.findByIdAndDelete(partyOrderId);
+  if (!order) {
+    return res.status(401).json({ error: "Order not found!" });
+  }
   res.json({ message: "Order removed successfully!" });
 });
 
